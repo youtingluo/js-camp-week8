@@ -11,6 +11,8 @@ const dayjs = require('dayjs');
  */
 function getDiscountRate(product) {
   // 請實作此函式
+  const discount = product.price / product.origin_price
+  return `${Math.round(discount * 10)}折`
 }
 
 /**
@@ -20,6 +22,8 @@ function getDiscountRate(product) {
  */
 function getAllCategories(products) {
   // 請實作此函式
+  const categorys = products.map(item => item.category)
+  return [...new Set(categorys)]
 }
 
 /**
@@ -30,6 +34,7 @@ function getAllCategories(products) {
 function formatDate(timestamp) {
   // 請實作此函式
   // 提示：dayjs.unix...
+  return dayjs.unix(timestamp).format('YYYY/MM/DD HH:mm')
 }
 
 /**
@@ -43,6 +48,10 @@ function getDaysAgo(timestamp) {
   // 1. 用 dayjs() 取得今天
   // 2. 用 dayjs.unix(timestamp) 取得日期
   // 3. 用 .diff() 計算天數差異
+  const today = dayjs()
+  const date = dayjs.unix(timestamp)
+  if(!today.diff(date, 'day')) return '今天'
+  return `${today.diff(date, 'day')} 天前`
 }
 
 /**
@@ -59,6 +68,15 @@ function getDaysAgo(timestamp) {
  */
 function validateOrderUser(data) {
   // 請實作此函式
+  const errors = []
+  const validPayment = ['ATM', 'Credit Card', 'Apple Pay']
+  if(!data.name || data.name.trim().length === 0) errors.push('姓名不可為空')
+  if(!/^09\d{8}$/.test(data.tel)) errors.push('電話必須是 09 開頭的 10 位數字')
+  if(!data.email.includes('@')) errors.push('Email 必須包含 @ 符號')
+  if(!data.address || data.address.trim().length === 0) errors.push('地址不可為空')
+  if(!validPayment.includes(data.payment)) 
+    errors.push(`付款必須是 'ATM', 'Credit Card', 'Apple Pay' 其中之一`)
+  return { isValid: errors.length === 0, errors }
 }
 
 /**
@@ -73,6 +91,15 @@ function validateOrderUser(data) {
  */
 function validateCartQuantity(quantity) {
   // 請實作此函式
+  let str = ''
+  if(!Number.isInteger(quantity)) {
+    str = '必須是正整數'
+  } else if (quantity < 1) {
+    str = '不可小於 1'
+  } else if (quantity > 99) {
+    str = '不可大於 99'
+  }
+  return { isValid: !str, error: str }
 }
 
 /**
@@ -92,6 +119,10 @@ function validateCartQuantity(quantity) {
  */
 function formatCurrency(amount) {
   // 請實作此函式
+  const formatRule = new Intl.NumberFormat('zh-TW', {
+    maximumFractionDigits: 0
+  })
+  return 'NT$ ' + formatRule.format(amount)
 }
 
 module.exports = {
