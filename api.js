@@ -26,7 +26,7 @@ async function fetchCart() {
   // 請實作此函式
   const response = await axios.get(`${BASE_URL}/api/livejs/v1/customer/${API_PATH}/carts`)
   console.log(response)
-  return { carts, total, finalTotal} = response.data
+  return { carts, total, finalTotal } = response.data
 }
 
 /**
@@ -92,7 +92,7 @@ async function clearCart() {
 async function createOrder(userInfo) {
   // 請實作此函式
   const response = await axios.post(`${BASE_URL}/api/livejs/v1/customer/${API_PATH}/orders`, {
-    data: {user: userInfo}
+    data: { user: userInfo }
   })
   return response.data
 }
@@ -129,10 +129,10 @@ async function fetchOrders() {
  */
 async function updateOrderStatus(orderId, isPaid) {
   // 請實作此函式
-  const data = { id: orderId, paid: isPaid}
+  const data = { id: orderId, paid: isPaid }
   const response = await axios.put(`${BASE_URL}/api/livejs/v1/admin/${API_PATH}/orders`, {
-    data 
-  },{
+    data
+  }, {
     headers: {
       authorization: ADMIN_TOKEN
     }

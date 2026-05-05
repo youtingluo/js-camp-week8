@@ -15,11 +15,15 @@ async function placeOrder(userInfo) {
   // 提示：先用 utils validateOrderUser() 驗證使用者資料，驗證失敗時回傳 { success: false, errors: [...] }
   // 驗證通過後，呼叫 createOrder() 建立訂單
   // 回傳格式：{ success: true, data: ... } / { success: false, errors: [...] }
-  if(!validateOrderUser(userInfo).isValid) {
+  if (!validateOrderUser(userInfo).isValid) {
     return { success: false, errors: validateOrderUser(userInfo).errors }
   }
-  const data = await createOrder(userInfo)
-  return { success: true, data }
+  try {
+    const data = await createOrder(userInfo)
+    return { success: true, data }
+  } catch (error) {
+    return { success: false, errors: error.message }
+  }
 }
 
 /**
@@ -65,11 +69,12 @@ async function updatePaymentStatus(orderId, isPaid) {
   // 請實作此函式
   // 提示：呼叫 updateOrderStatus()
   // 回傳格式：{ success: true, data: ... } / { success: false, error: ... }
-  const data = await updateOrderStatus(orderId,isPaid)
-  if(!data.status) {
-    return { success: false, error: data.message }
+  try {
+    const data = await updateOrderStatus(orderId, isPaid)
+    return { success: true, data }
+  } catch (error) {
+    return { success: false, error: error.message }
   }
-  return { success: true, data }
 }
 
 /**
@@ -81,11 +86,12 @@ async function removeOrder(orderId) {
   // 請實作此函式
   // 提示：呼叫 deleteOrder()
   // 回傳格式：{ success: true, data: ... } / { success: false, error: ... }
-  const data = await deleteOrder(orderId)
-  if(!data.status) {
-    return { success: false, error: data.message }
+  try {
+    const data = await deleteOrder(orderId)
+    return { success: true, data }
+  } catch (error) {
+    return { success: false, error: error.message }
   }
-  return { success: true, data }
 }
 
 /**
@@ -145,10 +151,30 @@ function displayOrders(orders) {
   // 商品明細：
   //   - 產品名稱 x 2（產品數量）
   // ========================================
-  if(!orders.length) {
-    return '沒有訂單'
+  if (!orders.length) {
+    console.log('沒有訂單')
+    return 
   }
-
+  console.log(`訂單列表：`)
+  console.log(`========================================`)
+  orders.forEach((item, index) => {
+    console.log(`訂單 ${index + 1}`)
+    console.log(`----------------------------------------`)
+    console.log(`訂單編號：${item.createdAt}`)
+    console.log(`顧客姓名：${item.user.name}`)
+    console.log(`聯絡電話：${item.user.tel}`)
+    console.log(`寄送地址：${item.user.address}`)
+    console.log(`付款方式：${item.user.payment}`)
+    console.log(`訂單金額：${formatCurrency(item.total)}`)
+    console.log(`付款狀態：${item.paid ? '已付款' : '未付款'}`)
+    console.log(`建立時間：${formatDate(item.createdAt)} (${getDaysAgo(item.createdAt)})`)
+    console.log(`----------------------------------------`)
+    console.log(`商品明細：`)
+    item.products.forEach(product => {
+      console.log(`- ${product.title} x ${item.quantity}`)
+    })
+  })
+  console.log(`========================================`)
 }
 
 module.exports = {

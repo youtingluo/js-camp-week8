@@ -71,8 +71,14 @@ function displayProducts(products) {
   //    原價：NT$ 1,000
   //    售價：NT$ 800 (8折)
   // ----------------------------------------
-  products.forEach(item => {
-    console.log({ 產品分類: item.title, 分類: item.category, 原價: formatCurrency(item.origin_price), 售價: `${formatCurrency(price)}(${getDiscountRate(item)})`})
+  console.log(`產品列表：`)
+  console.log(`----------------------------------------`)
+  products.forEach((item, index) => {
+    console.log(`${index + 1}}. ${item.title}`)
+    console.log(`   分類：${item.category}`)
+    console.log(`   原價：${formatCurrency(item.origin_price)}`)
+    console.log(`   售價：${formatCurrency(item.price)} (${getDiscountRate(item)})`)
+    console.log(`----------------------------------------`)
   })
 }
 
